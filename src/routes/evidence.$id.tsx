@@ -1,5 +1,5 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { getEvidenceById } from "@/mocks/evidence";
+import { getEvidenceById, type EvidenceRecord } from "@/mocks/evidence";
 import { JsonViewer } from "@/components/json-viewer";
 import { DocumentViewer } from "@/components/document-viewer";
 import { StageBoundaryBanner } from "@/components/stage-banner";
@@ -15,7 +15,7 @@ export const Route = createFileRoute("/evidence/$id")({
   loader: ({ params }) => {
     const record = getEvidenceById(params.id);
     if (!record) throw notFound();
-    return record;
+    return record satisfies EvidenceRecord;
   },
   notFoundComponent: () => (
     <div className="h-full flex items-center justify-center text-sm text-white/50">
