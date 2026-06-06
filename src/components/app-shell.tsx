@@ -2,6 +2,8 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import { useState, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { RuntimeDetailsDrawer } from "@/components/runtime-details-drawer";
+import { DataSourceBadge } from "@/components/data-source-badge";
+import { useDataSource } from "@/lib/advent-one/source";
 
 const NAV = [
   { to: "/", label: "Overview" },
@@ -24,6 +26,7 @@ function StatusPills() {
       <span className="px-2.5 py-1 rounded-full border border-brand-teal/30 text-[10px] font-mono uppercase tracking-wider text-brand-teal">
         mtmd_cli
       </span>
+      <DataSourceBadge />
     </div>
   );
 }
@@ -79,14 +82,24 @@ function Sidebar({ onOpenRuntime }: { onOpenRuntime: () => void }) {
 }
 
 function Header() {
+  const { mode } = useDataSource();
   return (
     <header className="h-16 flex-shrink-0 border-b border-white/5 flex items-center justify-between px-8 bg-background">
       <div className="flex items-center gap-4">
-        <h1 className="font-display text-xl font-medium tracking-tight">RollupOS</h1>
+        <h1 className="font-display text-xl font-medium tracking-tight">Advent One</h1>
+        <span className="text-white/10">·</span>
+        <span className="text-[10px] font-mono uppercase tracking-widest text-white/30">
+          Precision Console
+        </span>
         <span className="text-white/10">·</span>
         <div className="text-sm text-white/50">
           Target: <span className="text-white/80">Sakura Logistics</span>
         </div>
+        {mode === "live" && (
+          <span className="text-[10px] font-mono uppercase tracking-widest text-brand-teal/70">
+            · connected
+          </span>
+        )}
       </div>
       <StatusPills />
     </header>
