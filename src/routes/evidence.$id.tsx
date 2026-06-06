@@ -1,4 +1,4 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { getEvidenceById, type EvidenceRecord } from "@/mocks/evidence";
 import { JsonViewer } from "@/components/json-viewer";
 import { DocumentViewer } from "@/components/document-viewer";
@@ -55,7 +55,14 @@ function EvidenceDetail() {
         </div>
       );
     }
-    throw notFound();
+    return (
+      <div className="h-full flex flex-col items-center justify-center gap-3">
+        <p className="text-sm text-white/60">Evidence record {id} not found.</p>
+        <Link to="/evidence" className="text-xs font-mono text-brand-orange uppercase tracking-widest hover:underline">
+          ← Back to evidence
+        </Link>
+      </div>
+    );
   }
 
   return (
