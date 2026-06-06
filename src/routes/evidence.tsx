@@ -1,12 +1,15 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { evidenceRecords } from "@/mocks/evidence";
-import { StageBoundaryBanner } from "@/components/stage-banner";
+import { evidenceRecords as mockRecords } from "@/mocks/evidence";
+import { StageBoundaryBanner, BackendErrorBanner } from "@/components/stage-banner";
 import { TelemetryStrip } from "@/components/telemetry-strip";
+import { useDataSource } from "@/lib/advent-one/source";
+import { useLiveFacts } from "@/lib/advent-one/queries";
+import { adaptFactToEvidence } from "@/lib/advent-one/adapters";
 
 export const Route = createFileRoute("/evidence")({
   head: () => ({
     meta: [
-      { title: "RollupOS — Evidence" },
+      { title: "Advent One — Evidence" },
       { name: "description", content: "Stage 1 evidence records extracted from Sakura Logistics site capture." },
     ],
   }),
@@ -19,10 +22,28 @@ function formatTime(iso: string) {
 }
 
 function EvidenceList() {
+  const { mode } = useDataSource();
+  const isLive = mode === "live";
+  const facts = useLiveFacts(isLive);
+
+  const records = isLive
+    ? (facts.data ?? []).map((f) => adaptFactToEvidence(f))
+    : mockRecords;
+
+  const showError = isLive && facts.isError;
+
   return (
     <div className="h-full flex flex-col min-h-0">
       <div className="flex-1 min-h-0 overflow-y-auto">
         <div className="max-w-7xl mx-auto px-12 py-12">
+          {showError && (
+            <div className="mb-8">
+              <BackendErrorBanner
+                message={(facts.error as Error).message}
+                status={(facts.error as Error & { status?: number }).status}
+              />
+            </div>
+          )}
           <div className="flex items-end justify-between mb-12">
             <div>
               <div className="text-[10px] font-mono text-white/30 uppercase tracking-widest mb-3">
@@ -38,12 +59,27 @@ function EvidenceList() {
               </p>
             </div>
             <div className="text-[10px] font-mono text-white/40 uppercase tracking-widest">
-              {evidenceRecords.length} records · target: Sakura Logistics
+              {records.length} records · target: Sakura Logistics
+              {isLive && <span className="ml-2 text-brand-teal">· live</span>}
             </div>
           </div>
 
+          {records.length === 0 && !showError && (
+            <div className="border border-dashed border-white/15 p-12 text-center">
+              <p className="text-sm text-white/60">
+                No evidence captured yet.
+              </p>
+              <Link
+                to="/capture"
+                className="inline-block mt-4 text-xs font-mono text-brand-orange uppercase tracking-widest hover:underline"
+              >
+                Go to capture →
+              </Link>
+            </div>
+          )}
+
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-px bg-white/5 border border-white/5">
-            {evidenceRecords.map((r) => (
+            {records.map((r) => (
               <Link
                 key={r.id}
                 to="/evidence/$id"
@@ -65,14 +101,20 @@ function EvidenceList() {
                   </div>
                 </div>
                 <div className="aspect-[4/3] bg-stone-200 overflow-hidden mb-4 ring-1 ring-black/40">
-                  <img
-                    src={r.image}
-                    alt={r.title}
-                    loading="lazy"
-                    width={400}
-                    height={300}
-                    className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity"
-                  />
+                  {r.image ? (
+                    <img
+                      src={r.image}
+                      alt={r.title}
+                      loading="lazy"
+                      width={400}
+                      height={300}
+                      className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center bg-panel text-[10px] font-mono text-white/30 uppercase tracking-widest">
+                      no image stored
+                    </div>
+                  )}
                 </div>
                 <div className="font-display text-lg leading-snug mb-3 text-balance">
                   {r.title}
