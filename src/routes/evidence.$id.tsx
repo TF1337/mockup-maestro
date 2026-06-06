@@ -35,7 +35,7 @@ export const Route = createFileRoute("/evidence/$id")({
 });
 
 function EvidenceDetail() {
-  const record = Route.useLoaderData();
+  const record = Route.useLoaderData() as EvidenceRecord;
 
   return (
     <div className="h-full flex flex-col min-h-0">
