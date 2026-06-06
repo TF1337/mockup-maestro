@@ -52,19 +52,19 @@ export const healthQueryOptions = () =>
   });
 
 export function useLiveFacts(enabled: boolean) {
-  return useQuery<ExtractedFact[]>({ ...factsQueryOptions(), enabled });
+  return useQuery({ ...factsQueryOptions(), enabled });
 }
 
 export function useLiveGraph(enabled: boolean) {
-  return useQuery<WorkflowGraph | null>({ ...graphQueryOptions(), enabled });
+  return useQuery({ ...graphQueryOptions(), enabled });
 }
 
 export function useLiveState(enabled: boolean) {
-  return useQuery<IngestionState>({ ...stateQueryOptions(), enabled });
+  return useQuery({ ...stateQueryOptions(), enabled });
 }
 
 export function useLiveHealth(enabled: boolean) {
-  return useQuery<HealthResponse>({ ...healthQueryOptions(), enabled });
+  return useQuery({ ...healthQueryOptions(), enabled });
 }
 
 export function useTriggerMutation() {
