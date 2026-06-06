@@ -12,6 +12,7 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { AppShell } from "../components/app-shell";
+import { DataSourceProvider } from "../lib/advent-one/source";
 
 function NotFoundComponent() {
   return (
@@ -78,9 +79,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "RollupOS — On-device acquisition modernization copilot" },
+      { title: "Advent One — On-device acquisition modernization copilot" },
       { name: "description", content: "Local edge inference for under-digitized SMEs. Grounded evidence extraction, observed workflow reconstruction." },
-      { property: "og:title", content: "RollupOS" },
+      { property: "og:title", content: "Advent One" },
       { property: "og:description", content: "On-device acquisition modernization copilot for under-digitized SMEs." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -124,9 +125,11 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <AppShell>
-        <Outlet />
-      </AppShell>
+      <DataSourceProvider>
+        <AppShell>
+          <Outlet />
+        </AppShell>
+      </DataSourceProvider>
     </QueryClientProvider>
   );
 }
