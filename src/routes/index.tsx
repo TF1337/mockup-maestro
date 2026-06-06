@@ -4,9 +4,9 @@ import { Link } from "@tanstack/react-router";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "RollupOS — Overview" },
+      { title: "Advent One — Overview" },
       { name: "description", content: "On-device acquisition modernization copilot for under-digitized SMEs. Demo target: Sakura Logistics." },
-      { property: "og:title", content: "RollupOS — Overview" },
+      { property: "og:title", content: "Advent One — Overview" },
       { property: "og:description", content: "On-device acquisition modernization copilot for under-digitized SMEs." },
     ],
   }),
@@ -36,7 +36,7 @@ function Index() {
           On-device acquisition modernization copilot for under-digitized SMEs.
         </h1>
         <p className="mt-8 text-base text-white/50 max-w-[60ch] leading-relaxed">
-          An analyst brings a local AMD Ryzen AI PC appliance to an SME site. RollupOS captures
+          An analyst brings a local AMD Ryzen AI PC appliance to an SME site. Advent One captures
           analog business evidence — invoices, delivery slips, handwritten notes, whiteboards,
           temperature logs — and renders it as strict, schema-bound JSON.
         </p>

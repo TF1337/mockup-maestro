@@ -1,9 +1,12 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { getEvidenceById, type EvidenceRecord } from "@/mocks/evidence";
 import { JsonViewer } from "@/components/json-viewer";
 import { DocumentViewer } from "@/components/document-viewer";
 import { StageBoundaryBanner } from "@/components/stage-banner";
 import { TelemetryStrip } from "@/components/telemetry-strip";
+import { useDataSource } from "@/lib/advent-one/source";
+import { useLiveFacts } from "@/lib/advent-one/queries";
+import { adaptFactToEvidence } from "@/lib/advent-one/adapters";
 
 export const Route = createFileRoute("/evidence/$id")({
   head: ({ params }) => ({
@@ -12,11 +15,7 @@ export const Route = createFileRoute("/evidence/$id")({
       { name: "description", content: "Single Stage 1 evidence record with schema-bound JSON." },
     ],
   }),
-  loader: ({ params }) => {
-    const record = getEvidenceById(params.id);
-    if (!record) throw notFound();
-    return record satisfies EvidenceRecord;
-  },
+  // No loader: we resolve mock vs live in the component to avoid SSR fetches.
   notFoundComponent: () => (
     <div className="h-full flex items-center justify-center text-sm text-white/50">
       Evidence record not found.
@@ -35,7 +34,36 @@ export const Route = createFileRoute("/evidence/$id")({
 });
 
 function EvidenceDetail() {
-  const record = Route.useLoaderData() as EvidenceRecord;
+  const { id } = Route.useParams();
+  const { mode } = useDataSource();
+  const isLive = mode === "live";
+  const facts = useLiveFacts(isLive);
+
+  let record: EvidenceRecord | undefined;
+  if (isLive) {
+    const f = facts.data?.find((x) => x.id === id);
+    record = f ? adaptFactToEvidence(f) : undefined;
+  } else {
+    record = getEvidenceById(id);
+  }
+
+  if (!record) {
+    if (isLive && facts.isLoading) {
+      return (
+        <div className="h-full flex items-center justify-center text-xs font-mono text-white/40 uppercase tracking-widest">
+          loading…
+        </div>
+      );
+    }
+    return (
+      <div className="h-full flex flex-col items-center justify-center gap-3">
+        <p className="text-sm text-white/60">Evidence record {id} not found.</p>
+        <Link to="/evidence" className="text-xs font-mono text-brand-orange uppercase tracking-widest hover:underline">
+          ← Back to evidence
+        </Link>
+      </div>
+    );
+  }
 
   return (
     <div className="h-full flex flex-col min-h-0">
