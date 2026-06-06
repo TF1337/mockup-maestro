@@ -13,14 +13,7 @@ import {
   postSynthesize,
   postTrigger,
 } from "./client";
-import type {
-  ExtractedFact,
-  HealthResponse,
-  IngestionState,
-  SchemaName,
-  SynthesizeResponse,
-  WorkflowGraph,
-} from "./types";
+import type { SchemaName, SynthesizeResponse, WorkflowGraph } from "./types";
 
 export const factsQueryOptions = () =>
   queryOptions({
