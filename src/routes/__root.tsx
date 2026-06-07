@@ -85,7 +85,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:description", content: "On-device acquisition modernization copilot for under-digitized SMEs." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
-      { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:site", content: "@AdventOne" },
     ],
     links: [
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
