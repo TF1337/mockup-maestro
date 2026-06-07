@@ -55,10 +55,14 @@ function WorkflowPage() {
       }
     : workflowMock;
 
-  const requiresReviewSet = useMemo(
+  const bottleneckSet = useMemo(
+    () => new Set(isLive && liveAdapted ? liveAdapted.bottleneck_node_ids : []),
+    [isLive, liveAdapted],
+  );
+  const founderSet = useMemo(
     () =>
       new Set(
-        isLive && liveAdapted ? liveAdapted.requires_review_node_ids : [],
+        isLive && liveAdapted ? liveAdapted.founder_dependent_node_ids : [],
       ),
     [isLive, liveAdapted],
   );
@@ -182,9 +186,14 @@ function WorkflowPage() {
                           <div className="text-xs text-white/40 mt-1">{n.sub}</div>
                         </div>
                         <div className="flex items-center gap-2">
-                          {needsReview && (
+                          {bottleneckSet.has(n.id) && (
                             <span className="text-[10px] font-mono px-1.5 py-0.5 border border-brand-amber/40 text-brand-amber uppercase tracking-wider whitespace-nowrap">
-                              requires human review
+                              bottleneck
+                            </span>
+                          )}
+                          {founderSet.has(n.id) && (
+                            <span className="text-[10px] font-mono px-1.5 py-0.5 border border-brand-orange/50 text-brand-orange uppercase tracking-wider whitespace-nowrap">
+                              founder dependent
                             </span>
                           )}
                           <div className="text-[10px] font-mono text-white/30 uppercase tracking-widest whitespace-nowrap">
