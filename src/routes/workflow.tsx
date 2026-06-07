@@ -55,14 +55,10 @@ function WorkflowPage() {
       }
     : workflowMock;
 
-  const bottleneckSet = useMemo(
-    () => new Set(isLive && liveAdapted ? liveAdapted.bottleneck_node_ids : []),
-    [isLive, liveAdapted],
-  );
-  const founderSet = useMemo(
+  const requiresReviewSet = useMemo(
     () =>
       new Set(
-        isLive && liveAdapted ? liveAdapted.founder_dependent_node_ids : [],
+        isLive && liveAdapted ? liveAdapted.requires_review_node_ids : [],
       ),
     [isLive, liveAdapted],
   );
@@ -160,6 +156,7 @@ function WorkflowPage() {
             <div className="flex flex-col gap-3">
               {w.workflow_nodes.map((n, idx) => {
                 const isActive = n.id === effectiveActiveId;
+                const needsReview = requiresReviewSet.has(n.id);
                 return (
                   <div key={n.id} className="flex items-stretch gap-4">
                     <div className="w-10 flex flex-col items-center pt-4">
@@ -185,14 +182,9 @@ function WorkflowPage() {
                           <div className="text-xs text-white/40 mt-1">{n.sub}</div>
                         </div>
                         <div className="flex items-center gap-2">
-                          {bottleneckSet.has(n.id) && (
+                          {needsReview && (
                             <span className="text-[10px] font-mono px-1.5 py-0.5 border border-brand-amber/40 text-brand-amber uppercase tracking-wider whitespace-nowrap">
-                              bottleneck
-                            </span>
-                          )}
-                          {founderSet.has(n.id) && (
-                            <span className="text-[10px] font-mono px-1.5 py-0.5 border border-brand-orange/50 text-brand-orange uppercase tracking-wider whitespace-nowrap">
-                              founder dependent
+                              requires human review
                             </span>
                           )}
                           <div className="text-[10px] font-mono text-white/30 uppercase tracking-widest whitespace-nowrap">
@@ -286,19 +278,19 @@ function WorkflowPage() {
             </section>
           )}
 
-          {isLive && liveAdapted && (liveAdapted.bottleneck_summary_en || liveAdapted.bottleneck_summary_jp) && (
+          {isLive && liveAdapted && (liveAdapted.workflow_observations_en || liveAdapted.workflow_observations_jp) && (
             <section className="mb-8">
-              <div className="text-[10px] font-mono text-brand-amber uppercase tracking-widest mb-3">
-                Bottleneck summary
+              <div className="text-[10px] font-mono text-brand-teal uppercase tracking-widest mb-3">
+                Workflow observations
               </div>
-              {liveAdapted.bottleneck_summary_jp && (
+              {liveAdapted.workflow_observations_jp && (
                 <p className="text-xs text-white/70 leading-relaxed mb-2">
-                  {liveAdapted.bottleneck_summary_jp}
+                  {liveAdapted.workflow_observations_jp}
                 </p>
               )}
-              {liveAdapted.bottleneck_summary_en && (
+              {liveAdapted.workflow_observations_en && (
                 <p className="text-xs text-white/50 leading-relaxed">
-                  {liveAdapted.bottleneck_summary_en}
+                  {liveAdapted.workflow_observations_en}
                 </p>
               )}
             </section>
