@@ -75,44 +75,41 @@ function titleFromFact(fact: ExtractedFact): string {
 
 /**
  * Map a backend WorkflowGraph to the existing WorkflowMock UI type.
- * Does NOT derive missing_documentation_signals from requires_human_review.
  */
 export function adaptGraphToWorkflow(
   graph: WorkflowGraph,
   factCount: number,
   target: string,
 ): WorkflowMock & {
-  bottleneck_node_ids: string[];
-  founder_dependent_node_ids: string[];
-  bottleneck_summary_jp: string;
-  bottleneck_summary_en: string;
+  requires_review_node_ids: string[];
+  workflow_observations_jp: string;
+  workflow_observations_en: string;
 } {
   return {
     target,
     record_count: factCount,
     document_types_observed: [], // backend doesn't emit this aggregate
-    repeated_manual_paper_signals: [], // backend no longer emits this
-    missing_documentation_signals: [], // never derived; hidden if empty
+    repeated_manual_paper_signals: [], // not available in backend response
+    missing_documentation_signals: [], // not derived; hidden if empty
     workflow_nodes: graph.nodes.map((n) => ({
       id: n.id,
       label: n.label_en || n.label_jp,
       sub: n.label_jp,
       evidenceIds: n.source_fact_ids,
-      manualPaperSignals: [],
+      manualPaperSignals: n.bottleneck || n.founder_dependent
+        ? ["founder_dependent"]
+        : [],
     })),
     workflow_edges: graph.edges.map((e) => ({
       from: e.source,
       to: e.target,
       label: e.label ?? undefined,
     })),
-    bottleneck_node_ids: graph.nodes
-      .filter((n) => n.bottleneck)
+    requires_review_node_ids: graph.nodes
+      .filter((n) => n.founder_dependent || n.bottleneck)
       .map((n) => n.id),
-    founder_dependent_node_ids: graph.nodes
-      .filter((n) => n.founder_dependent)
-      .map((n) => n.id),
-    bottleneck_summary_jp: graph.bottleneck_summary_jp,
-    bottleneck_summary_en: graph.bottleneck_summary_en,
+    workflow_observations_jp: graph.bottleneck_summary_jp,
+    workflow_observations_en: graph.bottleneck_summary_en,
   };
 }
 
