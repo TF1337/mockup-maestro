@@ -29,9 +29,9 @@ export type WorkflowNode = {
   label_en: string;
   role?: string | null;
   node_type: "start" | "step" | "decision" | "external" | "end";
-  observed_signals: string[];
+  bottleneck: boolean;
+  founder_dependent: boolean;
   source_fact_ids: string[];
-  requires_human_review: boolean;
 };
 
 export type WorkflowEdge = {
@@ -43,11 +43,8 @@ export type WorkflowEdge = {
 export type WorkflowGraph = {
   nodes: WorkflowNode[];
   edges: WorkflowEdge[];
-  observed_manual_or_paper_signals: string[];
-  approval_reference_count: number;
-  owner_or_president_mentions: number;
-  workflow_observations_jp: string;
-  workflow_observations_en: string;
+  bottleneck_summary_jp: string;
+  bottleneck_summary_en: string;
 };
 
 export type IngestionStatus = "SLEEP" | "AWAKE" | "PROCESSING" | "READY";
