@@ -160,7 +160,6 @@ function WorkflowPage() {
             <div className="flex flex-col gap-3">
               {w.workflow_nodes.map((n, idx) => {
                 const isActive = n.id === effectiveActiveId;
-                const needsReview = requiresReviewSet.has(n.id);
                 return (
                   <div key={n.id} className="flex items-stretch gap-4">
                     <div className="w-10 flex flex-col items-center pt-4">
