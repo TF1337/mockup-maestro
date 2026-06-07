@@ -82,40 +82,37 @@ export function adaptGraphToWorkflow(
   factCount: number,
   target: string,
 ): WorkflowMock & {
-  requires_review_node_ids: string[];
-  workflow_observations_jp: string;
-  workflow_observations_en: string;
+  bottleneck_node_ids: string[];
+  founder_dependent_node_ids: string[];
+  bottleneck_summary_jp: string;
+  bottleneck_summary_en: string;
 } {
-  const counts = new Map<string, number>();
-  for (const sig of graph.observed_manual_or_paper_signals) {
-    counts.set(sig, (counts.get(sig) ?? 0) + 1);
-  }
-
   return {
     target,
     record_count: factCount,
     document_types_observed: [], // backend doesn't emit this aggregate
-    repeated_manual_paper_signals: Array.from(counts.entries()).map(
-      ([signal, count]) => ({ signal, count }),
-    ),
+    repeated_manual_paper_signals: [], // backend no longer emits this
     missing_documentation_signals: [], // never derived; hidden if empty
     workflow_nodes: graph.nodes.map((n) => ({
       id: n.id,
       label: n.label_en || n.label_jp,
       sub: n.label_jp,
       evidenceIds: n.source_fact_ids,
-      manualPaperSignals: n.observed_signals,
+      manualPaperSignals: [],
     })),
     workflow_edges: graph.edges.map((e) => ({
       from: e.source,
       to: e.target,
       label: e.label ?? undefined,
     })),
-    requires_review_node_ids: graph.nodes
-      .filter((n) => n.requires_human_review)
+    bottleneck_node_ids: graph.nodes
+      .filter((n) => n.bottleneck)
       .map((n) => n.id),
-    workflow_observations_jp: graph.workflow_observations_jp,
-    workflow_observations_en: graph.workflow_observations_en,
+    founder_dependent_node_ids: graph.nodes
+      .filter((n) => n.founder_dependent)
+      .map((n) => n.id),
+    bottleneck_summary_jp: graph.bottleneck_summary_jp,
+    bottleneck_summary_en: graph.bottleneck_summary_en,
   };
 }
 
