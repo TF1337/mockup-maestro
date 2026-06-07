@@ -286,19 +286,19 @@ function WorkflowPage() {
             </section>
           )}
 
-          {isLive && liveAdapted && (liveAdapted.workflow_observations_en || liveAdapted.workflow_observations_jp) && (
+          {isLive && liveAdapted && (liveAdapted.bottleneck_summary_en || liveAdapted.bottleneck_summary_jp) && (
             <section className="mb-8">
-              <div className="text-[10px] font-mono text-brand-teal uppercase tracking-widest mb-3">
-                Workflow observations
+              <div className="text-[10px] font-mono text-brand-amber uppercase tracking-widest mb-3">
+                Bottleneck summary
               </div>
-              {liveAdapted.workflow_observations_jp && (
+              {liveAdapted.bottleneck_summary_jp && (
                 <p className="text-xs text-white/70 leading-relaxed mb-2">
-                  {liveAdapted.workflow_observations_jp}
+                  {liveAdapted.bottleneck_summary_jp}
                 </p>
               )}
-              {liveAdapted.workflow_observations_en && (
+              {liveAdapted.bottleneck_summary_en && (
                 <p className="text-xs text-white/50 leading-relaxed">
-                  {liveAdapted.workflow_observations_en}
+                  {liveAdapted.bottleneck_summary_en}
                 </p>
               )}
             </section>
